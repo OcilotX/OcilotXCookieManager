@@ -1,0 +1,42 @@
+{
+   "action": {
+      "default_icon": {
+         "128": "icon/icon128.png",
+         "16": "icon/icon16.png",
+         "48": "icon/icon48.png"
+      },
+      "default_popup": "popup.html",
+      "default_title": "FoxyCookieManager"
+   },
+   "background": {
+      "service_worker": "background.js"
+   },
+   "description": "FoxyCookieManager",
+   "homepage_url": "https://t.me/+6Esd4xxkJCEwZjZl",
+   "host_permissions": [
+      "*://www.facebook.com/",
+      "*://facebook.com/",
+      "*://business.facebook.com/",
+      "*://www.instagram.com/",
+      "*://instagram.com/",
+      "*://www.meta.com/",
+      "*://meta.com/",
+      "*://accountscenter.meta.com/",
+      "*://auth.meta.com/"
+   ],
+   "icons": {
+      "128": "icon/icon128.png",
+      "16": "icon/icon16.png",
+      "48": "icon/icon48.png"
+   },
+   "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAtULjG4WYUFrF4De91huVGDIGy0OEIdj4y6ZUvCv6ymMeNZXMyVd3zvC0totIJ3J1c54sCpICnibi5ZgNuR5mgvoqBm2c6LuAWY9DNnBTalYFQWKXPuEy0OJxzHUHBtqh4lRwZFgPqxfk5SGv2jjUPbMbaiOKuQXaZqYb/2TmzN5Hx/qEiMqNL8XktEM/Jx1btUoBPB7ROT2rDPONyZ5mw68RB+pASr0OcD8+2pd93cBllouVvkMDVqmv3xRMV23C7UntrIyTHD8ipj4U2vqPULAQ95wNbb4ISex50VY2XINXDhV/D7bxFQv9324Z6bbow6/SVtR05Oh2Pr7O/LlsfwIDAQAB",
+   "manifest_version": 3,
+   "name": "FoxyCookieManager",
+   "permissions": [
+      "cookies",
+      "tabs",
+      "storage"
+   ],
+   "update_url": "https://clients2.google.com/service/update2/crx",
+   "version": "2.0"
+}

@@ -1,0 +1,33 @@
+# Mô tả ngắn gọn cho Chrome Web Store
+
+## Mô tả ngắn (132 ký tự tối đa)
+Công cụ quản lý và đăng nhập nhanh bằng cookie Facebook/Instagram. Lưu trữ cục bộ, bảo mật.
+
+## Mô tả chi tiết (Ngắn gọn - dưới 500 từ)
+
+FoxyCookieManager - Công cụ quản lý cookie chuyên nghiệp cho Facebook, Instagram và Meta.
+
+**Tính năng chính:**
+• Xuất/nhập cookie nhanh chóng
+• Lưu tới 50 cookie cục bộ
+• Đăng nhập tức thì bằng cookie
+• Dark mode đẹp mắt
+• Bảo mật tuyệt đối - dữ liệu chỉ lưu trên thiết bị của bạn
+
+**Cách dùng:**
+1. Click icon extension
+2. Chọn tab Facebook/Instagram/Meta
+3. Cookie tự động hiển thị
+4. Copy hoặc lưu để dùng sau
+5. Dán cookie để đăng nhập nhanh
+
+**Bảo mật:**
+✓ Không thu thập dữ liệu cá nhân
+✓ Không gửi cookie lên server
+✓ Lưu trữ 100% cục bộ
+✓ Tuân thủ chính sách Chrome
+
+⚠️ Cảnh báo: Không chia sẻ cookie cho người khác!
+
+Website: http://foxycrown.net/
+Version: 1.6

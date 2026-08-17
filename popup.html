@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FoxyCookieManager</title>
+    <link rel="stylesheet" href="popup-styles.css">
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="icon">
+                <img src="icon/icon.png" alt="Extension Icon">
+            </div>
+            <div class="title-wrap">
+                <p class="title">FoxyCookieManager <span class="pro-tag">PRO</span></p>
+            </div>
+            <div class="theme-switch">
+                <span>Theme</span>
+                <select id="theme-select" class="theme-select">
+                    <option value="system">System</option>
+                    <option value="light">Light</option>
+                    <option value="dark">Dark</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="facebook">
+                <img src="icon/facebook.png" alt="Facebook logo">
+                Facebook
+            </button>
+            <button class="tab-btn" data-tab="instagram">
+                <img src="icon/instagram.png" alt="Instagram logo">
+                Instagram
+            </button>
+            <button class="tab-btn" data-tab="meta">
+                <img src="icon/meta.png" alt="Meta logo">
+                Meta
+            </button>
+            <button class="tab-btn" data-tab="manager">
+                <img src="icon/icon.png" alt="Manager icon">
+                Manager
+            </button>
+        </div>
+
+        <div class="panel active" id="panel-facebook">
+            <div class="card">
+                <div class="card-header">
+                    <p class="card-title">Facebook Cookie</p>
+                    <span class="badge fb">FB</span>
+                </div>
+                <div class="uid-display" id="facebook-uid-display" style="display: none;">
+                    <span class="uid-label">ID:</span>
+                    <span class="uid-value" id="facebook-uid-value"></span>
+                    <button class="uid-copy-btn" id="copy-facebook-uid">Copy</button>
+                </div>
+                <textarea id="facebook-cookies" placeholder="c_user=...; datr=...; xs=...;"></textarea>
+
+                <!-- Security Warning Box -->
+                <div class="security-warning">
+                    <svg class="warning-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path
+                            d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z">
+                        </path>
+                        <line x1="12" y1="9" x2="12" y2="13"></line>
+                        <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                    </svg>
+                    <div class="warning-text">
+                        <strong>Cảnh báo bảo mật:</strong> Cookie đăng nhập có thể cho phép truy cập tài khoản của bạn.
+                        Không chia sẻ, sao chép hoặc gửi cookie cho bất kỳ cá nhân/tổ chức nào không đáng tin cậy.
+                        FoxyCookieManager không chịu trách nhiệm nếu bạn tự ý cung cấp cookie cho bên thứ ba.
+                    </div>
+                </div>
+
+                <div class="button-group fb-actions">
+                    <button class="btn-primary" id="login-facebook">Login</button>
+                    <button class="btn-primary" id="login-facebook-4">Login 4D</button>
+                    <button class="btn-danger" id="clear-facebook">Clear</button>
+                    <button class="btn-success" id="copy-facebook">Copy</button>
+                    <button class="btn-ghost" id="save-facebook">Save</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel" id="panel-instagram">
+            <div class="card">
+                <div class="card-header">
+                    <p class="card-title">Instagram Cookie</p>
+                    <span class="badge ig">IG</span>
+                </div>
+                <textarea id="instagram-cookies" placeholder="ds_user_id=...; sessionid=...;"></textarea>
+
+                <!-- Security Warning Box -->
+                <div class="security-warning">
+                    <svg class="warning-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path
+                            d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z">
+                        </path>
+                        <line x1="12" y1="9" x2="12" y2="13"></line>
+                        <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                    </svg>
+                    <div class="warning-text">
+                        <strong>Cảnh báo bảo mật:</strong> Cookie đăng nhập có thể cho phép truy cập tài khoản của bạn.
+                        Không chia sẻ, sao chép hoặc gửi cookie cho bất kỳ cá nhân/tổ chức nào không đáng tin cậy.
+                    </div>
+                </div>
+
+                <div class="button-group ig-actions">
+                    <button class="btn-ig" id="login-instagram">Login</button>
+                    <button class="btn-danger" id="clear-instagram">Clear</button>
+                    <button class="btn-success" id="copy-instagram">Copy</button>
+                    <button class="btn-ghost" id="save-instagram">Save</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel" id="panel-meta">
+            <div class="card">
+                <div class="card-header">
+                    <p class="card-title">Meta Cookie</p>
+                    <span class="badge" style="background: #0ea5e9;">META</span>
+                </div>
+                <textarea id="meta-cookies" placeholder="cookie1=...; cookie2=...;"></textarea>
+
+                <!-- Security Warning Box -->
+                <div class="security-warning">
+                    <svg class="warning-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path
+                            d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z">
+                        </path>
+                        <line x1="12" y1="9" x2="12" y2="13"></line>
+                        <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                    </svg>
+                    <div class="warning-text">
+                        <strong>Cảnh báo bảo mật:</strong> Cookie đăng nhập có thể cho phép truy cập tài khoản của bạn.
+                        Không chia sẻ, sao chép hoặc gửi cookie cho bất kỳ cá nhân/tổ chức nào không đáng tin cậy.
+                    </div>
+                </div>
+
+                <div class="button-group ig-actions">
+                    <button class="btn-primary" id="login-meta">Login</button>
+                    <button class="btn-danger" id="clear-meta">Clear</button>
+                    <button class="btn-success" id="copy-meta">Copy</button>
+                    <button class="btn-ghost" id="save-meta">Save</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel" id="panel-manager">
+            <div class="card">
+                <div class="card-header">
+                    <p class="card-title">Cookie Manager</p>
+                    <div class="manager-tools">
+                        <button class="btn-success" id="export-cookies">Export</button>
+                        <button class="btn-ghost" id="import-cookies">Import</button>
+                        <input type="file" id="import-file" accept="application/json,.json" hidden>
+                    </div>
+                </div>
+                <div class="privacy-notice">
+                    <svg class="info-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="16" x2="12" y2="12"></line>
+                        <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                    </svg>
+                    <span>Dữ liệu cookie chỉ được lưu cục bộ trên trình duyệt của bạn, không tự động gửi lên máy
+                        chủ.</span>
+                </div>
+                <div id="saved-cookies-list">
+                    <div class="empty-state">Chưa có cookie nào được lưu</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <a href="https://ocilotx.com" target="_blank">Created by OcilotX</a>
+        </div>
+    </div>
+
+    <!-- Custom Modal Dialog -->
+    <div class="modal-overlay" id="duplicate-modal">
+        <div class="modal-dialog">
+            <div class="modal-title" id="modal-title">ID đã tồn tại!</div>
+            <div class="modal-message" id="modal-message">
+                ID này đã tồn tại!<br>
+                Bạn muốn làm gì?
+            </div>
+            <div class="modal-buttons">
+                <button class="modal-btn modal-btn-success" id="modal-new-btn">Tạo mới [2]</button>
+                <button class="modal-btn modal-btn-primary" id="modal-overwrite-btn">Ghi đè</button>
+                <button class="modal-btn modal-btn-cancel" id="modal-cancel-btn">Hủy</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Rename Modal Dialog -->
+    <div class="modal-overlay" id="rename-modal">
+        <div class="modal-dialog">
+            <div class="modal-title" id="rename-modal-title">Đổi tên cookie</div>
+            <div class="modal-message" id="rename-modal-message">Nhập tên hiển thị</div>
+            <input id="rename-input" class="modal-input" type="text" placeholder="Ví dụ: Via 01" />
+            <div class="modal-buttons" style="margin-top: 14px;">
+                <button class="modal-btn modal-btn-primary" id="rename-save-btn">Lưu</button>
+                <button class="modal-btn modal-btn-cancel" id="rename-cancel-btn">Hủy</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="src/popup.js"></script>
+</body>
+
+</html>
