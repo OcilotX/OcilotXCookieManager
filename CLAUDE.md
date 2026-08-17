@@ -13,6 +13,7 @@ Chrome Extension (Manifest V3) quản lý cookie đăng nhập Facebook / Instag
 - **Debug popup**: chuột phải icon extension → "Inspect popup" (mở DevTools cho `popup.html`).
 - **Debug service worker**: link "service worker" trên card extension.
 - Không có test runner. Kiểm thử thủ công qua popup trên trang FB/IG/Meta thật.
+- **Đóng gói phát hành**: `sh pack.sh` → tạo `foxycookiemanager-v<version>.zip` chỉ gồm file runtime (whitelist). Cố tình loại trừ mọi `*.md`, `*.txt`, `manifest-new.json`, `icon/_backup_foxy/` khỏi bản ship. Chỉ dùng để pack; luồng dev vẫn là "Load unpacked" cả thư mục.
 
 ## Kiến trúc
 
