@@ -80,7 +80,7 @@ Extension yêu cầu các quyền sau:
 
 ### Hỗ trợ
 
-- Website: https://t.me/+6Esd4xxkJCEwZjZl
+- Website: https://t.me/+0xmbWF_0L3QwMDA1
 - Phiên bản: 1.6
 - Cập nhật: Thường xuyên
 

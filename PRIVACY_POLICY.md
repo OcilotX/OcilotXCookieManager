@@ -112,7 +112,7 @@ We may update this Privacy Policy from time to time. We will notify users of any
 
 If you have questions about this Privacy Policy, please contact us:
 
-- Website: https://t.me/+6Esd4xxkJCEwZjZl
+- Website: https://t.me/+0xmbWF_0L3QwMDA1
 - Extension Version: 1.6
 
 ## Compliance
