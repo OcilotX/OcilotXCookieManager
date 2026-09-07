@@ -17,8 +17,11 @@
       "*://www.facebook.com/",
       "*://facebook.com/",
       "*://business.facebook.com/",
+      "*://graph.facebook.com/*",
+      "*://*.fbcdn.net/*",
       "*://www.instagram.com/",
       "*://instagram.com/",
+      "*://i.instagram.com/*",
       "*://www.meta.com/",
       "*://meta.com/",
       "*://accountscenter.meta.com/",
@@ -38,5 +41,5 @@
       "storage"
    ],
    "update_url": "https://clients2.google.com/service/update2/crx",
-   "version": "2.0"
+   "version": "2.1"
 }

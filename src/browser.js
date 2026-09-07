@@ -26,9 +26,8 @@ export async function clearCookies(domain) {
   ));
 }
 
-// Wipe `domain` then set every pair from `cookiesString`.
-export async function clearAndSetCookies(domain, cookiesString, path = "/") {
-  await clearCookies(domain);
+// Set every pair from `cookiesString` on `domain` (expiry +10y).
+export async function setCookies(domain, cookiesString, path = "/") {
   const expirationDate = Math.floor(Date.now() / 1000) + TEN_YEARS;
   await Promise.all(
     parseCookieString(cookiesString)
@@ -43,9 +42,18 @@ export async function clearAndSetCookies(domain, cookiesString, path = "/") {
   );
 }
 
-// Set cookies for a platform then navigate the active tab to it.
+// Wipe `domain` then set every pair from `cookiesString`.
+export async function clearAndSetCookies(domain, cookiesString, path = "/") {
+  await clearCookies(domain);
+  await setCookies(domain, cookiesString, path);
+}
+
+// Switch account: wipe ALL of the platform's domains (Meta keeps session on
+// auth./accountscenter. subdomains — clearing only the main domain would leave
+// the old account logged in), set the new cookies, then navigate.
 export async function login(platform, cookiesString) {
-  await clearAndSetCookies(platform.domain, cookiesString);
+  await Promise.all(platform.clearDomains.map(clearCookies));
+  await setCookies(platform.domain, cookiesString);
   const tab = await queryActiveTab();
   if (tab) chrome.tabs.update(tab.id, { url: platform.redirect });
 }

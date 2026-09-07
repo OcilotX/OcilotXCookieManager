@@ -15,7 +15,7 @@
                 <img src="icon/icon.png" alt="Extension Icon">
             </div>
             <div class="title-wrap">
-                <p class="title">FoxyCookieManager <span class="pro-tag">PRO</span></p>
+                <p class="title">FoxyCookieManager <span class="pro-tag">PRO</span> <span class="ver-tag">v2.1</span></p>
             </div>
             <div class="theme-switch">
                 <span>Theme</span>
@@ -50,12 +50,15 @@
             <div class="card">
                 <div class="card-header">
                     <p class="card-title">Facebook Cookie</p>
-                    <span class="badge fb">FB</span>
+                    <div class="card-header-right">
+                        <span class="status-badge none" id="facebook-status" title="Bấm để kiểm tra lại">—</span>
+                        <span class="badge fb">FB</span>
+                    </div>
                 </div>
                 <div class="uid-display" id="facebook-uid-display" style="display: none;">
                     <span class="uid-label">ID:</span>
                     <span class="uid-value" id="facebook-uid-value"></span>
-                    <button class="uid-copy-btn" id="copy-facebook-uid">Copy</button>
+                    <button class="uid-copy-icon" data-copy="facebook-uid-value" title="Copy ID" aria-label="Copy ID"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
                 </div>
                 <textarea id="facebook-cookies" placeholder="c_user=...; datr=...; xs=...;"></textarea>
 
@@ -89,7 +92,18 @@
             <div class="card">
                 <div class="card-header">
                     <p class="card-title">Instagram Cookie</p>
-                    <span class="badge ig">IG</span>
+                    <div class="card-header-right">
+                        <span class="status-badge none" id="instagram-status" title="Bấm để kiểm tra lại">—</span>
+                        <span class="badge ig">IG</span>
+                    </div>
+                </div>
+                <div class="uid-display" id="instagram-uid-display" style="display: none;">
+                    <span class="uid-label">ID:</span>
+                    <span class="uid-value" id="instagram-uid-value"></span>
+                    <button class="uid-copy-icon" data-copy="instagram-uid-value" title="Copy ID" aria-label="Copy ID"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
+                    <span class="uid-label uid-label-2">User:</span>
+                    <span class="uid-username" id="instagram-username" title="Instagram username"></span>
+                    <button class="uid-copy-icon" data-copy="instagram-username" data-strip-at title="Copy username" aria-label="Copy username"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
                 </div>
                 <textarea id="instagram-cookies" placeholder="ds_user_id=...; sessionid=...;"></textarea>
 
@@ -121,7 +135,10 @@
             <div class="card">
                 <div class="card-header">
                     <p class="card-title">Meta Cookie</p>
-                    <span class="badge" style="background: #0ea5e9;">META</span>
+                    <div class="card-header-right">
+                        <span class="status-badge none" id="meta-status" title="Bấm để kiểm tra lại">—</span>
+                        <span class="badge" style="background: #0ea5e9;">META</span>
+                    </div>
                 </div>
                 <textarea id="meta-cookies" placeholder="cookie1=...; cookie2=...;"></textarea>
 

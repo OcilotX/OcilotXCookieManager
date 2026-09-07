@@ -4,27 +4,38 @@ import { getAll, queryActiveTab, login, clearPlatform } from "./browser.js";
 import { buildCookieString, pickCookieKeys, getCookieValue } from "./cookies.js";
 import { saveCookie, deleteSaved, renameSaved, findSaved, exportAll, importAll } from "./storage.js";
 import { initTheme } from "./theme.js";
+import { checkStatus, STATUS, fetchInstagramUsername } from "./status.js";
 import {
   activateTab, copyToClipboard, showTemporaryMessage,
-  showDuplicateModal, showRenameModal, renderSavedCookies,
+  showDuplicateModal, showRenameModal, renderSavedCookies, setStatusBadge,
 } from "./ui.js";
 
 const $ = id => document.getElementById(id);
 const textareaId = name => `${name}-cookies`;
+const statusId = name => `${name}-status`;
+
+// Check a platform's textarea cookie and paint its header badge.
+async function refreshStatus(platformName) {
+  const badge = $(statusId(platformName));
+  if (!badge) return;
+  const cookie = $(textareaId(platformName))?.value || "";
+  if (!cookie.trim()) { setStatusBadge(badge, { state: STATUS.NONE, text: "—" }); return; }
+  setStatusBadge(badge, { state: STATUS.CHECKING, text: "checking…" });
+  setStatusBadge(badge, await checkStatus(platformName, cookie));
+}
 
 // --- Load cookies into each platform's textarea on open ---
 async function loadCookies() {
-  const tab = await queryActiveTab();
-  const activeUrl = tab?.url || "";
-
   for (const name of Object.keys(PLATFORMS)) {
     const p = PLATFORMS[name];
-    // Meta only reads when the active tab is a meta.com page (original behavior).
-    if (name === "meta" && !activeUrl.includes("meta.com")) continue;
+    // Cookies come from the store, not the page, so every platform reads
+    // regardless of the active tab (Meta no longer needs a meta.com page).
     const cookies = await getAll(p.getAll);
     const el = $(textareaId(name));
     if (el) el.value = buildCookieString(cookies, p.cookieNames);
     if (name === "facebook") updateFacebookUID(el ? el.value : "");
+    if (name === "instagram") updateInstagramUID(el ? el.value : "");
+    refreshStatus(name);
   }
 }
 
@@ -35,6 +46,25 @@ function updateFacebookUID(cookieString) {
   const uid = getCookieValue(cookieString, "c_user");
   if (uid) { value.textContent = uid; display.style.display = "flex"; }
   else { display.style.display = "none"; }
+}
+
+// Show Instagram ds_user_id + resolved username (via the private info endpoint).
+let igNameToken = 0;
+function updateInstagramUID(cookieString) {
+  const display = $("instagram-uid-display");
+  const value = $("instagram-uid-value");
+  const uname = $("instagram-username");
+  if (!display || !value || !uname) return;
+  const id = getCookieValue(cookieString, "ds_user_id");
+  if (!id) { display.style.display = "none"; uname.textContent = ""; return; }
+  value.textContent = id;
+  uname.textContent = "…"; // loading
+  display.style.display = "flex";
+  const token = ++igNameToken; // ignore results from a stale cookie
+  fetchInstagramUsername(id).then(username => {
+    if (token !== igNameToken) return;
+    uname.textContent = username ? "@" + username : "—";
+  });
 }
 
 // --- Save flow (shared across platforms) ---
@@ -140,10 +170,31 @@ document.addEventListener("DOMContentLoaded", () => {
   Object.entries(copyMap).forEach(([btnId, [src, msg]]) =>
     $(btnId)?.addEventListener("click", () => { copyToClipboard($(src).value); showTemporaryMessage(msg); }));
 
-  $("copy-facebook-uid")?.addEventListener("click", () => {
-    const uid = $("facebook-uid-value").textContent;
-    if (uid) { copyToClipboard(uid); showTemporaryMessage("ID copied to clipboard!"); }
+  // Copy helper: clean the placeholder states and copy the rest.
+  const copyValue = (text, stripAt, msg) => {
+    let val = (text || "").trim();
+    if (stripAt) val = val.replace(/^@/, "");
+    if (val && val !== "…" && val !== "—") { copyToClipboard(val); showTemporaryMessage(msg); }
+  };
+
+  // Small copy icons next to id / username (data-copy = target element id).
+  document.querySelectorAll("[data-copy]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const target = $(btn.getAttribute("data-copy"));
+      if (!target) return;
+      const isUser = btn.hasAttribute("data-strip-at");
+      copyValue(target.textContent, isUser, isUser ? "Username copied to clipboard!" : "ID copied to clipboard!");
+    });
   });
+
+  // Click the id / username text itself to copy it too.
+  const wireClickCopy = (elId, msg, stripAt = false) => {
+    const el = $(elId);
+    el?.addEventListener("click", () => copyValue(el.textContent, stripAt, msg));
+  };
+  wireClickCopy("facebook-uid-value", "ID copied to clipboard!");
+  wireClickCopy("instagram-uid-value", "ID copied to clipboard!");
+  wireClickCopy("instagram-username", "Username copied to clipboard!", true);
 
   // Login buttons (from textarea)
   $("login-facebook")?.addEventListener("click", () => login(PLATFORMS.facebook, $("facebook-cookies").value));
@@ -153,21 +204,30 @@ document.addEventListener("DOMContentLoaded", () => {
   $("login-meta")?.addEventListener("click", () => login(PLATFORMS.meta, $("meta-cookies").value));
 
   // Clear buttons
+  const resetBadge = name => setStatusBadge($(statusId(name)), { state: STATUS.NONE, text: "—" });
+
   $("clear-facebook")?.addEventListener("click", async () => {
     await clearPlatform(PLATFORMS.facebook);
-    $("facebook-cookies").value = ""; updateFacebookUID(""); showTemporaryMessage("Facebook Cookies cleared!", "danger");
+    $("facebook-cookies").value = ""; updateFacebookUID(""); resetBadge("facebook"); showTemporaryMessage("Facebook Cookies cleared!", "danger");
   });
   $("clear-instagram")?.addEventListener("click", async () => {
     await clearPlatform(PLATFORMS.instagram);
-    $("instagram-cookies").value = ""; showTemporaryMessage("Instagram Cookies cleared!", "danger");
+    $("instagram-cookies").value = ""; updateInstagramUID(""); resetBadge("instagram"); showTemporaryMessage("Instagram Cookies cleared!", "danger");
   });
   $("clear-meta")?.addEventListener("click", async () => {
     await clearPlatform(PLATFORMS.meta);
-    $("meta-cookies").value = ""; showTemporaryMessage("Meta Cookies cleared!", "danger");
+    $("meta-cookies").value = ""; resetBadge("meta"); showTemporaryMessage("Meta Cookies cleared!", "danger");
   });
 
-  // FB UID live update
+  // FB / IG UID live update
   $("facebook-cookies")?.addEventListener("input", function () { updateFacebookUID(this.value); });
+  $("instagram-cookies")?.addEventListener("input", function () { updateInstagramUID(this.value); });
+
+  // Status badges: reset to stale on manual edit, re-check on click.
+  ["facebook", "instagram", "meta"].forEach(name => {
+    $(textareaId(name))?.addEventListener("input", () => resetBadge(name));
+    $(statusId(name))?.addEventListener("click", () => refreshStatus(name));
+  });
 
   // Save buttons
   $("save-facebook")?.addEventListener("click", () => handleSave("facebook"));
@@ -183,7 +243,16 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // Saved-cookie action delegation
-  $("saved-cookies-list")?.addEventListener("click", e => {
+  $("saved-cookies-list")?.addEventListener("click", async e => {
+    const badge = e.target.closest("[data-status]");
+    if (badge) {
+      const platformName = badge.getAttribute("data-platform");
+      const item = await findSaved(platformName, badge.getAttribute("data-id"));
+      if (!item) return;
+      setStatusBadge(badge, { state: STATUS.CHECKING, text: "…" });
+      setStatusBadge(badge, await checkStatus(platformName, item.cookie));
+      return;
+    }
     const btn = e.target.closest("button[data-action]");
     if (!btn) return;
     const fn = ACTIONS[btn.getAttribute("data-action")];

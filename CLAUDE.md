@@ -37,8 +37,8 @@ ES modules native (`<script type="module" src="src/popup.js">`), không bundler/
 - **Đọc**: khi mở popup, `chrome.cookies.getAll` lấy cookie theo domain, lọc theo danh sách tên cố định per platform, ghép thành chuỗi `name=value; ...` rồi đổ vào textarea. Danh sách tên:
   - FB: `c_user, datr, fr, sb, xs, wd`
   - IG: `mid, ig_did, datr, ig_nrcb, csrftoken, ds_user_id, sessionid, rur`
-  - Meta: `fs, datr, locale, ps_l, ps_n` (chỉ đọc khi tab active là `meta.com`)
-- **Login**: `clearAndSetCookies(domain, ...)` — **xóa sạch** cookie domain đó trước, rồi set từng cặp từ chuỗi textarea (expiry +10 năm), rồi `chrome.tabs.update` reload trang. Đây là cơ chế "đổi tài khoản".
+  - Meta: `fs, datr, locale, ps_l, ps_n` (đọc từ cookie store, không cần tab active là `meta.com`)
+- **Login**: `login(platform, ...)` — **xóa sạch tất cả `clearDomains`** của platform trước (Meta giữ session ở subdomain `auth.`/`accountscenter.` nên chỉ xóa domain chính là dính account cũ), rồi `setCookies` set từng cặp từ chuỗi textarea lên `platform.domain` (expiry +10 năm), rồi `chrome.tabs.update` reload trang. Đây là cơ chế "đổi tài khoản". `clearAndSetCookies(domain, ...)` (xóa 1 domain rồi set) vẫn còn nhưng login không dùng nữa.
 - **Login 4D** (tính năng đặc trưng): `pickCookieKeys(raw, ["datr","fr","sb","wd"])` — chỉ giữ 4 cookie này, **cố tình bỏ `c_user` và `xs`** để không đăng nhập full session (an toàn khi làm via). Đừng thêm `c_user`/`xs` vào set 4D.
 
 ### Lưu trữ (`chrome.storage.local`)

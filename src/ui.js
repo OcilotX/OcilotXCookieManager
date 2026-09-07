@@ -2,6 +2,14 @@
 import { PLATFORMS } from "./platforms.js";
 import { getSaved } from "./storage.js";
 import { getCookieValue } from "./cookies.js";
+import { checkStatus, mapLimit } from "./status.js";
+
+// Paint a live/die badge element from a {state, text} result.
+export function setStatusBadge(el, result) {
+  if (!el) return;
+  el.className = "status-badge " + result.state;
+  el.textContent = result.text;
+}
 
 export function escapeHtml(text) {
   const div = document.createElement("div");
@@ -132,6 +140,7 @@ function itemHtml(item, platformName) {
           <img src="${r.icon}" alt="${r.alt}" style="width: 16px; height: 16px; vertical-align: middle; margin-right: 6px;">
           <span>${name}</span>
           <button class="btn-ghost" data-action="${r.rename}" data-id="${item.id}" style="padding: 2px 6px; font-size: 12px; border-radius: 8px; margin-left: 6px;">✎</button>
+          <span class="status-badge checking" data-status data-platform="${platformName}" data-id="${item.id}" title="Bấm để kiểm tra lại">…</span>
         </div>
         <div class="saved-cookie-time">${escapeHtml(item.timestamp)}</div>
       </div>
@@ -158,12 +167,20 @@ export async function renderSavedCookies() {
   }
 
   const groups = [["facebook", fb], ["instagram", ig], ["meta", meta]];
+  const tasks = [];
   groups.forEach(([platformName, list]) => {
     list.forEach(item => {
       const el = document.createElement("div");
       el.className = "saved-cookie-item";
       el.innerHTML = itemHtml(item, platformName);
       container.appendChild(el);
+      const badge = el.querySelector("[data-status]");
+      if (badge) tasks.push({ badge, platformName, cookie: item.cookie });
     });
+  });
+
+  // Auto-check live/die with bounded concurrency (Graph requests can rate-limit).
+  mapLimit(tasks, 4, async ({ badge, platformName, cookie }) => {
+    setStatusBadge(badge, await checkStatus(platformName, cookie));
   });
 }
