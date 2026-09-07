@@ -94,7 +94,7 @@ export async function exportAll() {
     data[PLATFORMS[name].storageKey] = await getSaved(name);
   }
   return {
-    app: "FoxyCookieManager",
+    app: "FoxyCrown Cookie Manager",
     version: 1,
     exportedAt: new Date().toISOString(),
     data,
